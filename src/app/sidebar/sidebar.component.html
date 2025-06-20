@@ -1,0 +1,39 @@
+<div class="sidebar-overlay" [class.show]="isOpen" (click)="closeSidebar()"></div>
+
+<nav class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <img src="/assets/images/textron-logo.png" alt="Logo" class="sidebar-logo">
+  </div>
+
+  <div class="sidebar-content">
+    <ul class="nav-menu">
+      
+      <li class="nav-item">
+        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
+          <i class="dx-icon dx-icon-table"></i>
+          <span>Sales Orders</span>
+        </a>
+        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
+          <i class="dx-icon dx-icon-table"></i>
+          <span>Roles</span>
+        </a>
+        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
+          <i class="dx-icon dx-icon-table"></i>
+          <span>Groups</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">
+        <i class="dx-icon dx-icon-user"></i>
+      </div>
+      <div class="user-details">
+        <span class="user-name">{{ user || 'Usuer' }}</span>
+        <span class="user-role">DSSM</span>
+      </div>
+    </div>
+  </div>
+</nav>

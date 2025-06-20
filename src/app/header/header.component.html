@@ -1,0 +1,34 @@
+<header>
+  <div class="logo-container">
+      <button class="dx-icon-menu" type="button"  (click)="onToggleSidebar()">
+      </button>
+
+    <div class="logo" (click)="navigateTo('principal')">
+      <img src="/assets/images/textron-logo.png" alt="Logo">
+    </div>
+  </div>
+
+  <div class="title-container">
+    <div class="form-container">
+      <div class="title">
+        <h1>{{pageTitle}}</h1>
+      </div>
+    </div>
+  </div>                                                                                     
+  
+  <div class="user-container">
+    <div class="sub-container desaparece">
+      DSSM 
+      <span *ngIf="!isInternetConnected" class="alert alert-danger"> - Conexión a internet perdida</span>
+      <span *ngIf="!isApiConnected" class="alert alert-danger"> - Conexión con el servidor perdida</span>
+    </div>
+    
+    <div class="user-name desaparece">
+      {{ user || 'Usuario no disponible' }}
+    </div>
+
+    <div class="menu-container">
+      <!-- Menu content -->
+    </div>
+  </div>
+</header>
