@@ -41,7 +41,7 @@ export class UsersTableService {
   }
 
   update(id: number, role: Partial<Role>): Observable<Role> {
-    return this.http.patch<Role>(`${this.apiUrl}/${id}`, role)
+    return this.http.put<Role>(`${this.apiUrl}/${id}`, role)
       .pipe(
         tap(() => console.log('Patch Success')),
         catchError(error => {

@@ -2,21 +2,35 @@ import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
 import { UsersTableService } from './users-table.service';
+import { RoleGridService } from '../roles-table/role-grid.service';
+import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-roles-grid',
   templateUrl: './users-table.component.html',
   styleUrls: ['./users-table.component.css'],
-  providers: [UsersTableService],
+  providers: [UsersTableService, RoleGridService],
 })
 export class UsersTableComponent implements OnInit {
   dataSource!: DataSource;
+  rolesDataSource: any[] = [];
+  roles: any[] = [];
   collapsed = false;
   isLoading = true;
   hasError = false;
   errorMessage = '';
+  roleDropdownOptions = {
+    valueExpr: 'idRole',
+    displayExpr: 'roleName',
+    placeholder: 'Select a role...',
+    searchEnabled: false,    // Deshabilitar búsqueda/escritura
+    acceptCustomValue: false // No permitir valores personalizados
+  };
 
-  constructor(private service: UsersTableService) {}
+  constructor(
+    private service: UsersTableService,
+    private roleService: RoleGridService
+  ) {}
 
    onRowInserting(e: any): void {
     if (!e.data.roleName || e.data.roleName.trim() === '') {
@@ -47,7 +61,7 @@ export class UsersTableComponent implements OnInit {
   }
 
   onRowUpdating(e: any): void {
-    const updatedRole = {
+    const updatedUser = {
       ...e.oldData,
       ...e.newData,
       modifiedBy: 1,
@@ -55,7 +69,7 @@ export class UsersTableComponent implements OnInit {
     };
 
     e.promise = this.service
-      .update(e.key, updatedRole)
+      .update(e.key, updatedUser)
       .toPromise()
       .then((response) => {
         return response;
@@ -83,6 +97,24 @@ export class UsersTableComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.loadRoles();
+  }
+
+  private loadRoles(){
+    this.roleService.getData().subscribe({
+      next: (roles) => {
+        console.log(roles);
+        roles.map(role => {
+          this.roles.push({idRole: role.idRole, roleName: role.roleName})
+        })
+        console.log(this.roles);
+        
+        this.rolesDataSource = roles;
+      },
+      error: (error) => {
+        notify('Error loading roles', 'error', 3000)
+      }
+    })
   }
 
   private loadData() {
