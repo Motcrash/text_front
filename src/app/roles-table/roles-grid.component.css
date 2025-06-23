@@ -23,15 +23,6 @@
   overflow-x: auto !important;
 }
 
-::ng-deep .dx-datagrid-search-panel {
-  margin-top: 20px !important;
-}
-
-::ng-deep .dx-datagrid-header-panel {
-  padding-bottom: 30px !important;
-}
-
-/* === ESTILOS PARA EL LOADER === */
 .loading-container {
   display: flex;
   justify-content: center;
