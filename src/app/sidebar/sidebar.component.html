@@ -9,17 +9,23 @@
     <ul class="nav-menu">
       
       <li class="nav-item">
-        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
+        <a class="nav-link" (click)="navigateTo('orders-header')" [class.active]="currentRoute === 'orders-header'">
           <i class="dx-icon dx-icon-table"></i>
           <span>Sales Orders</span>
         </a>
-        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
-          <i class="dx-icon dx-icon-table"></i>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link" (click)="navigateTo('roles')" [class.active]="currentRoute === 'roles'">
+          <i></i>
           <span>Roles</span>
         </a>
-        <a href="#" class="nav-link" (click)="navigateTo('data-grid')" [class.active]="currentRoute === 'data-grid'">
-          <i class="dx-icon dx-icon-table"></i>
-          <span>Groups</span>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" (click)="navigateTo('users')" [class.active]="currentRoute === 'users'">
+          <i></i>
+          <span>Users</span>
         </a>
       </li>
     </ul>

@@ -28,10 +28,4 @@ export class SidebarComponent {
     this.navigationEvent.emit(route);
     this.closeSidebar();
   }
-
-  logout() {
-    // Implementar lógica de logout
-    console.log('Logout clicked');
-    this.navigateTo('login');
-  }
 }

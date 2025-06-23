@@ -5,7 +5,7 @@ import DataSource from 'devextreme/data/data_source';
 import { DxBulletModule, DxTemplateModule } from 'devextreme-angular';
 import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { DataGridService } from './data-grid.service';
+import { DataGridService } from './ordersHeader-grid.service';
 
 if (!/localhost/.test(document.location.host)) {
   enableProdMode();
@@ -19,8 +19,8 @@ if (window && window.config?.packageConfigPaths) {
 
 @Component({
   selector: 'demo-app',
-  templateUrl: './data-grid.component.html',
-  styleUrls: ['./data-grid.component.css'],
+  templateUrl: './ordersHeader-grid.component.html',
+  styleUrls: ['./ordersHeader-grid.component.css'],
   providers: [DataGridService],
 })
 export class AppComponent {

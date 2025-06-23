@@ -35,7 +35,6 @@
   left: 0;
 }
 
-/* Header del Sidebar */
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -44,10 +43,11 @@
   background-color: #004b77;
   color: white;
   min-height: 70px;
+  max-height: 70px;
 }
 
 .sidebar-logo {
-  height: 40px;
+  height: 70px;
   width: auto;
 }
 
@@ -66,7 +66,6 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Contenido del Sidebar */
 .sidebar-content {
   flex: 1;
   padding: 20px 0;
@@ -80,6 +79,10 @@
 
 .nav-item {
   margin-bottom: 5px;
+}
+
+.nav-item > a > span {
+  font-size: 17px;
 }
 
 .nav-link {
@@ -117,7 +120,6 @@
   font-weight: 500;
 }
 
-/* Footer del Sidebar */
 .sidebar-footer {
   padding: 20px;
   border-top: 1px solid #e9ecef;
@@ -186,7 +188,6 @@
   margin-right: 8px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;

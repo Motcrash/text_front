@@ -5,9 +5,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { DxBulletModule, DxDataGridModule, DxTemplateModule } from 'devextreme-angular';
-import { DataGridComponent } from './data-grid/data-grid.component';
+import { DataGridComponent } from './ordersHeader-grid/ordersHeader-grid.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { RolesGridComponent } from './roles-table/roles-grid.component';
+import { UsersTableComponent } from './users-table/users-table.component';
 
 
 @NgModule({
@@ -16,7 +18,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     HeaderComponent,
     DataGridComponent,
     SidebarComponent,
-    
+    RolesGridComponent,
+    UsersTableComponent
   ],
   imports: [
     BrowserModule,

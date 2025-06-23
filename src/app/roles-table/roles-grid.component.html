@@ -1,0 +1,77 @@
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p class="loading-text">Loading data...</p>
+  </div>
+</div>
+
+<div *ngIf="hasError && !isLoading" class="error-container">
+  <div class="error-message">
+    <i class="dx-icon dx-icon-warning"></i>
+    <h3>Error loading data</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="retry-button" (click)="retryLoad()">
+      Retry
+    </button>
+  </div>
+</div>
+
+<dx-data-grid
+  *ngIf="!isLoading && !hasError"
+  id="gridContainer"
+  [dataSource]="dataSource"
+  [remoteOperations]="false"
+  [allowColumnReordering]="true"
+  [rowAlternationEnabled]="true"
+  [showBorders]="true"
+  [width]="'100%'"
+  (onContentReady)="contentReady($event)"
+  (onRowUpdating)="onRowUpdating($event)"
+  (onRowRemoving)="onRowRemoving($event)"
+  (onRowInserting)="onRowInserting($event)"
+>
+
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  
+  <dxo-editing
+    mode="popup"
+    [allowUpdating]="true"
+    [allowAdding]="true"
+    [allowDeleting]="true">
+    
+    <dxo-popup
+      title="Role Information"
+      [showTitle]="true"
+      [width]="600"
+      [height]="500">
+    </dxo-popup>
+    
+    <dxo-form>
+      <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+          <dxi-item dataField="roleName"></dxi-item>
+          <dxi-item dataField="description"></dxi-item>
+          <dxi-item dataField="active"></dxi-item>
+      </dxi-item>
+    </dxo-form>
+  </dxo-editing>
+
+  <dxo-pager
+    [visible]="true"
+    [showPageSizeSelector]="true"
+    [allowedPageSizes]="[10, 25, 50, 100]"
+  ></dxo-pager>
+  <dxo-search-panel
+    [visible]="true"
+    [highlightCaseSensitive]="true"
+  ></dxo-search-panel>
+  <dxo-group-panel [visible]="false"></dxo-group-panel>
+  <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+  
+  <dxi-column dataField="roleName" dataType="text" caption="Role name"></dxi-column>
+  <dxi-column dataField="description" dataType="text" caption="Description"></dxi-column>
+  <dxi-column dataField="active" dataType="boolean" caption="Is active"></dxi-column>
+  <dxi-column dataField="createdBy" dataType="number" caption="Created by" cssClass="column-check-box"></dxi-column>
+  <dxi-column dataField="creationDatetime" dataType="datetime" caption="Creation datetime" format="shortDate"></dxi-column>
+  <dxi-column dataField="modifiedBy" dataType="number" caption="Modified by"></dxi-column>
+  <dxi-column dataField="modificationDatetime" dataType="datetime" caption="Modification datetime" format="shortDate"></dxi-column>
+</dx-data-grid>

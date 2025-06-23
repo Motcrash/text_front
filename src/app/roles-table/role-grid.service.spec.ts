@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DataGridService } from './data-grid.service';
+import { RoleGridService } from './role-grid.service';
 
-describe('Service', () => {
-  let service: DataGridService;
+describe('RoleGridService', () => {
+  let service: RoleGridService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(DataGridService);
+    service = TestBed.inject(RoleGridService);
   });
 
   it('should be created', () => {

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { DataGridService } from './data-grid.service';
+import { DataGridService } from './ordersHeader-grid.service';
 
 @Component({
   selector: 'app-data-grid',
-  templateUrl: './data-grid.component.html',
-  styleUrls: ['./data-grid.component.css'],
+  templateUrl: './ordersHeader-grid.component.html',
+  styleUrls: ['./ordersHeader-grid.component.css'],
   providers: [DataGridService],
 })
 export class DataGridComponent implements OnInit {

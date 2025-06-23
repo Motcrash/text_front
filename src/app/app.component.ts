@@ -22,13 +22,7 @@ export class AppComponent {
   }
 
   onNavigation(route: string) {
-    // Manejar navegación desde el sidebar
-    console.log('Navigating to:', route);
-    
-    // Si quieres implementar rutas reales más adelante:
-    // this.router.navigate([route]);
-    
-    // Por ahora, solo cerrar el sidebar
+    this.router.navigate([route]);
     this.closeSidebar();
   }
 }
