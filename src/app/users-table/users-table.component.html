@@ -55,8 +55,9 @@
           <dxi-item dataField="active"></dxi-item>
           <dxi-item dataField="idRole" 
           editorType="dxSelectBox"
-        [editorOptions]="roleDropdownOptions"></dxi-item>
-      </dxi-item>
+          [editorOptions]="roleDropdownOptions"></dxi-item>
+        </dxi-item>
+        <dxi-item dataField="email"></dxi-item>
     </dxo-form>
   </dxo-editing>
 
@@ -75,6 +76,7 @@
   <dxi-column dataField="firstName" dataType="text" caption="First name"></dxi-column>
   <dxi-column dataField="lastName" dataType="text" caption="Last name"></dxi-column>
   <dxi-column dataField="vbadge" dataType="text" caption="Vbadge"></dxi-column>
+  <dxi-column dataField="email" dataType="text" caption="Email"></dxi-column>
   <dxi-column dataField="idRole" caption="Role" [width]="150">
     <dxo-lookup 
         [dataSource]="rolesDataSource" 

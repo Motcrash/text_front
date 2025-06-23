@@ -23,8 +23,8 @@ export class UsersTableComponent implements OnInit {
     valueExpr: 'idRole',
     displayExpr: 'roleName',
     placeholder: 'Select a role...',
-    searchEnabled: false,    // Deshabilitar búsqueda/escritura
-    acceptCustomValue: false // No permitir valores personalizados
+    searchEnabled: false,
+    acceptCustomValue: false
   };
 
   constructor(
@@ -33,12 +33,14 @@ export class UsersTableComponent implements OnInit {
   ) {}
 
    onRowInserting(e: any): void {
-    if (!e.data.roleName || e.data.roleName.trim() === '') {
+    console.log(e);
+    e.data.vbadge = 'v81137';
+    if (!e.data.vbadge || e.data.vbadge.trim() === '') {
       e.cancel = true;
       return;
     }
 
-    const newRole = {
+    const newUser = {
       ...e.data,
       createdBy: 1,
       creationDatetime: new Date(),
@@ -46,15 +48,17 @@ export class UsersTableComponent implements OnInit {
       modificationDatetime: new Date(),
     };
 
+    console.log(newUser);
+    
+
     e.promise = this.service
-      .create(newRole)
+      .create(newUser)
       .toPromise()
       .then((response) => {
         this.loadData();
         return response;
       })
       .catch((error) => {
-        console.error('Error creating role');
         e.cancel = true;
         throw error;
       });
@@ -67,6 +71,9 @@ export class UsersTableComponent implements OnInit {
       modifiedBy: 1,
       modificationDatetime: new Date(),
     };
+
+    console.log(updatedUser);
+    
 
     e.promise = this.service
       .update(e.key, updatedUser)
@@ -89,7 +96,6 @@ export class UsersTableComponent implements OnInit {
         this.loadData();
       })
       .catch((error) => {
-        console.error('Delete failed');
         e.cancel = true;
         throw error;
       });
@@ -103,11 +109,9 @@ export class UsersTableComponent implements OnInit {
   private loadRoles(){
     this.roleService.getData().subscribe({
       next: (roles) => {
-        console.log(roles);
         roles.map(role => {
           this.roles.push({idRole: role.idRole, roleName: role.roleName})
         })
-        console.log(this.roles);
         
         this.rolesDataSource = roles;
       },
@@ -133,9 +137,7 @@ export class UsersTableComponent implements OnInit {
 
     this.service.getData().subscribe({
       next: (data) => {
-        if (data && Array.isArray(data) && data.length > 0) {
-          console.log(data);
-          
+        if (data && Array.isArray(data) && data.length > 0) {          
           this.dataSource = new DataSource({
             store: {
               type: 'array',
@@ -154,7 +156,6 @@ export class UsersTableComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error loading data:', error);
         this.hasError = true;
         this.errorMessage =
           'There was an error loading the data. Please try again later';

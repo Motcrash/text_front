@@ -4,7 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import 'devextreme/data/odata/store';
 import DataSource from 'devextreme/data/data_source';
 
-interface Role {
+interface User {
   idUser: number;
   firstName: string;
   lastName: string;
@@ -25,12 +25,11 @@ export class UsersTableService {
 
   getData(): Observable<any[]>{
     var res = this.http.get<any[]>(this.apiUrl);
-    console.log(res);
     return res;
   }
 
-  create(role: Role): Observable<Role> {
-    return this.http.post<Role>(this.apiUrl, role)
+  create(role: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, role)
       .pipe(
         tap(() => console.log('POST Success')),
         catchError(error => {
@@ -40,8 +39,8 @@ export class UsersTableService {
       );
   }
 
-  update(id: number, role: Partial<Role>): Observable<Role> {
-    return this.http.put<Role>(`${this.apiUrl}/${id}`, role)
+  update(id: number, role: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${id}`, role)
       .pipe(
         tap(() => console.log('Patch Success')),
         catchError(error => {
