@@ -30,7 +30,6 @@ export class RoleGridService {
       .pipe(
         tap(() => console.log('POST Success')),
         catchError(error => {
-          console.error('Create Error');
           throw error;
         })
       );

@@ -1,3 +1,5 @@
+<h1 class="title">Roles</h1>
+
 <div *ngIf="isLoading" class="loading-container">
   <div class="loading-spinner">
     <div class="spinner"></div>
@@ -48,9 +50,9 @@
     
     <dxo-form>
       <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
-          <dxi-item dataField="roleName"></dxi-item>
+          <dxi-item dataField="roleName" [isRequired]="true"></dxi-item>
           <dxi-item dataField="description"></dxi-item>
-          <dxi-item dataField="active"></dxi-item>
+          <dxi-item dataField="active" ></dxi-item>
       </dxi-item>
     </dxo-form>
   </dxo-editing>

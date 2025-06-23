@@ -2,6 +2,7 @@ import { RoleGridService } from './role-grid.service';
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
+import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-roles-grid',
@@ -21,7 +22,19 @@ export class RolesGridComponent implements OnInit {
    onRowInserting(e: any): void {
     if (!e.data.roleName || e.data.roleName.trim() === '') {
       e.cancel = true;
-      alert('Role name is required');
+      return;
+    }
+
+    const existingRoles = this.dataSource.items();
+    const isDuplicate = existingRoles.find(
+      (role: any) => role.roleName.toLowerCase().trim() === e.data.roleName.toLowerCase().trim()
+    );
+    console.log(isDuplicate);
+    
+
+    if (isDuplicate) {
+      e.cancel = true;
+      notify('A role with this name already exists. Please choose a different name.', 'error', 3000);
       return;
     }
 
@@ -41,9 +54,8 @@ export class RolesGridComponent implements OnInit {
         return response;
       })
       .catch((error) => {
-        console.error('Error creating role');
         e.cancel = true;
-        throw error;
+        notify(error.error, 'error', 3000);
       });
   }
 
