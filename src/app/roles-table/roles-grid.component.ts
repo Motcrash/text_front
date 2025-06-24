@@ -29,8 +29,6 @@ export class RolesGridComponent implements OnInit {
     const isDuplicate = existingRoles.find(
       (role: any) => role.roleName.toLowerCase().trim() === e.data.roleName.toLowerCase().trim()
     );
-    console.log(isDuplicate);
-    
 
     if (isDuplicate) {
       e.cancel = true;

@@ -10,7 +10,7 @@ import { filter, map } from 'rxjs';
 export class HeaderComponent implements OnInit {
   @Input() isInternetConnected: boolean = true;
   @Input() isApiConnected: boolean = true;
-  @Output() toggleSidebar = new EventEmitter<void>(); // ← Agregar este Output
+  @Output() toggleSidebar = new EventEmitter<void>();
   
   user: string = 'Edgar Delgado Cerrillo';
   pageTitle: string = '';
@@ -39,7 +39,6 @@ export class HeaderComponent implements OnInit {
     });
   }
 
-  // Método para manejar el toggle del sidebar
   onToggleSidebar() {
     this.toggleSidebar.emit();
   }

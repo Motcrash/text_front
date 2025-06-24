@@ -28,8 +28,37 @@
   [showBorders]="true"
   [width]="'100%'"
   (onContentReady)="contentReady($event)"
+  (onRowUpdating)="onRowUpdating($event)"
+  (onRowRemoving)="onRowRemoving($event)"
+  (onRowInserting)="onRowInserting($event)"
 >
   <dxo-paging [pageSize]="10"></dxo-paging>
+
+  <dxo-editing
+    mode="popup"
+    [allowUpdating]="true"
+    [allowAdding]="true"
+    [allowDeleting]="true"
+    [useIcons]="true">
+    
+    <dxo-popup
+      title="Role Information"
+      [showTitle]="true"
+      [width]="600"
+      [height]="500">
+    </dxo-popup>
+    
+    <dxo-form>
+      <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
+          <dxi-item dataField="orderDate" [isRequired]="true"></dxi-item>
+          <dxi-item dataField="dueDate"></dxi-item>
+          <dxi-item dataField="shipDate" ></dxi-item>
+          <dxi-item dataField="SubtoTal" ></dxi-item>
+          <dxi-item dataField="totalDue" ></dxi-item>
+      </dxi-item>
+    </dxo-form>
+  </dxo-editing>
+
   <dxo-pager
     [visible]="true"
     [showPageSizeSelector]="true"
@@ -42,16 +71,12 @@
   <dxo-group-panel [visible]="false"></dxo-group-panel>
   <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
   
-  <dxi-column dataField="salesOrderId" dataType="number" caption="Order ID" ></dxi-column>
+  <dxi-column dataField="salesOrderNumber" dataType="text" caption="Order number" format="shortDate" ></dxi-column>
   <dxi-column dataField="orderDate" dataType="date" caption="Order Date" format="shortDate" ></dxi-column>
   <dxi-column dataField="dueDate" dataType="date" caption="Due Date" format="shortDate" ></dxi-column>
   <dxi-column dataField="shipDate" dataType="date" caption="Ship Date" format="shortDate" ></dxi-column>
-  <dxi-column dataField="onlineOrderFlag" dataType="boolean" caption="Online Order" cssClass="column-check-box"></dxi-column>
   <dxi-column dataField="subTotal" dataType="number" caption="Subtotal" format="currency" ></dxi-column>
   <dxi-column dataField="totalDue" dataType="number" caption="Total Due" format="currency" ></dxi-column>
-  <dxi-column dataField="freight" dataType="number" caption="Freight" format="currency" ></dxi-column>
-  <dxi-column dataField="comment" dataType="string" caption="Comments" ></dxi-column>
-  <dxi-column dataField="modifiedDate" dataType="date" caption="Modified" format="shortDate" ></dxi-column>
 
   <div *dxTemplate="let d of 'discountCellTemplate'">
     <div class="chart-cell">
