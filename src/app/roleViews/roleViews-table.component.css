@@ -1,0 +1,149 @@
+::ng-deep .dx-datagrid .dx-data-row > td.bullet {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+::ng-deep .dx-header-row {
+  background-color: #004b77 !important;
+  color: #FFF !important;
+  font-weight: bold !important;
+}
+
+::ng-deep .dx-data-row {
+  background-color: #dad7d7; 
+  color: inherit;
+  font-weight: normal;
+}
+
+::ng-deep #gridContainer {
+  margin-left: 40px !important;
+  margin-right: 40px !important;
+  width: calc(100% - 80px) !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  margin: 40px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.loading-spinner {
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e9ecef;
+  border-top: 4px solid #004b77;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 500;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  margin: 40px;
+  background-color: #fff5f5;
+  border-radius: 8px;
+  border: 1px solid #fed7d7;
+}
+
+.error-message {
+  text-align: center;
+  color: #742a2a;
+}
+
+.error-message i {
+  font-size: 48px;
+  color: #e53e3e;
+  margin-bottom: 16px;
+}
+
+.error-message h3 {
+  font-size: 20px;
+  margin: 16px 0 8px;
+  color: #742a2a;
+}
+
+.error-message p {
+  font-size: 14px;
+  margin: 8px 0 24px;
+  color: #a0616a;
+}
+
+.retry-button {
+  background-color: #004b77;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #003a5f;
+}
+
+.retry-button i {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .loading-container,
+  .error-container {
+    margin: 20px;
+    min-height: 300px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .loading-text {
+    font-size: 14px;
+  }
+  
+  .error-message h3 {
+    font-size: 18px;
+  }
+  
+  .error-message i {
+    font-size: 36px;
+  }
+}
+
+.roles-dropdown {
+  width: 150px;
+  margin-left: 40px;
+  margin-bottom: 20px;
+}

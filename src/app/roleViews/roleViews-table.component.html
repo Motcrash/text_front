@@ -1,0 +1,94 @@
+<h1 class="title">Role views</h1>
+
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p class="loading-text">Loading data...</p>
+  </div>
+</div>
+
+<div *ngIf="hasError && !isLoading" class="error-container">
+  <div class="error-message">
+    <i class="dx-icon dx-icon-warning"></i>
+    <h3>Error loading data</h3>
+    <p>{{ errorMessage }}</p>
+    <button class="retry-button" (click)="retryLoad()">Retry</button>
+  </div>
+</div>
+
+<div class="roles-dropdown">
+  <dx-select-box
+    [items]="roles"
+    [displayExpr]="'roleName'"
+    [valueExpr]="'idRole'"
+    [value]="roles[0]?.idRole"
+    (onValueChanged)="selectStatus($event)"
+  ></dx-select-box>
+</div>
+
+<dx-data-grid
+  *ngIf="!isLoading && !hasError"
+  id="gridContainer"
+  [dataSource]="dataSource"
+  [remoteOperations]="false"
+  [allowColumnReordering]="true"
+  [rowAlternationEnabled]="true"
+  [showBorders]="true"
+  [width]="'100%'"
+  (onContentReady)="contentReady($event)"
+  (onRowUpdating)="onRowUpdating($event)"
+  (onRowRemoving)="onRowRemoving($event)"
+  (onRowInserting)="onRowInserting($event)"
+  (onEditingStart)="onEditingStart($event)"
+  (onInitNewRow)="onInitNewRow($event)"
+>
+  <dxo-paging [pageSize]="10"></dxo-paging>
+  <dxo-editing mode="cell" [allowUpdating]="true"> </dxo-editing>
+
+  <dxo-pager
+    [visible]="true"
+    [showPageSizeSelector]="true"
+    [allowedPageSizes]="[10, 25, 50, 100]"
+  ></dxo-pager>
+  <dxo-search-panel
+    [visible]="false"
+    [highlightCaseSensitive]="true"
+  ></dxo-search-panel>
+  <dxo-group-panel [visible]="false"></dxo-group-panel>
+  <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+
+  <dxi-column
+    dataField="idRole"
+    caption="Role"
+    [width]="150"
+    [allowEditing]="false"
+  >
+    <dxo-lookup
+      [dataSource]="rolesDataSource"
+      valueExpr="idRole"
+      displayExpr="roleName"
+    >
+    </dxo-lookup>
+  </dxi-column>
+
+  <dxi-column
+    dataField="idView"
+    caption="View"
+    [width]="150"
+    [allowEditing]="false"
+  >
+    <dxo-lookup [dataSource]="views" valueExpr="idView" displayExpr="viewName">
+    </dxo-lookup>
+  </dxi-column>
+
+  <dxi-column
+    dataField="canAccess"
+    dataType="boolean"
+    caption="Can view"
+  ></dxi-column>
+  <dxi-column
+    dataField="canEdit"
+    dataType="boolean"
+    caption="can edit"
+  ></dxi-column>
+</dx-data-grid>

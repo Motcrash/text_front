@@ -52,8 +52,10 @@
       <dxi-item itemType="group" [colCount]="2" [colSpan]="2">
           <dxi-item dataField="firstName"></dxi-item>
           <dxi-item dataField="lastName"></dxi-item>
+          <dxi-item dataField="vbadge" [isRequired]="true"></dxi-item>
           <dxi-item dataField="active"></dxi-item>
-          <dxi-item dataField="idRole" 
+          <dxi-item dataField="idRole"
+          [isRequired]="true" 
           editorType="dxSelectBox"
           [editorOptions]="roleDropdownOptions"></dxi-item>
         </dxi-item>
