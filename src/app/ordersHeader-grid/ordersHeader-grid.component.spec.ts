@@ -5,7 +5,7 @@ import DataSource from 'devextreme/data/data_source';
 import { DxBulletModule, DxTemplateModule } from 'devextreme-angular';
 import { DxDataGridModule } from 'devextreme-angular/ui/data-grid';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { DataGridService } from './ordersHeader-grid.service';
+import { OrdersHeaderService } from './ordersHeader-grid.service';
 
 if (!/localhost/.test(document.location.host)) {
   enableProdMode();
@@ -18,12 +18,13 @@ if (window && window.config?.packageConfigPaths) {
 }
 
 @Component({
-  selector: 'demo-app',
+  selector: 'app-data-grid',
   templateUrl: './ordersHeader-grid.component.html',
   styleUrls: ['./ordersHeader-grid.component.css'],
-  providers: [DataGridService],
+  providers: [OrdersHeaderService],
 })
-export class AppComponent {
+export class OrdersHeaderComponent {
+
 retryLoad() {
 throw new Error('Method not implemented.');
 }
@@ -42,7 +43,7 @@ hasError: any;
 isLoading: any;
 errorMessage: any;
 
-  constructor(service: DataGridService) {
+  constructor(service: OrdersHeaderService) {
     this.dataSource = service.getDataSource();
   }
 }
