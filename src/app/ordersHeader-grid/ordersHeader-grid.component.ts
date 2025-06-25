@@ -1,51 +1,85 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { DataGridService } from './ordersHeader-grid.service';
+import { OrdersHeaderService } from './ordersHeader-grid.service';
 import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-data-grid',
   templateUrl: './ordersHeader-grid.component.html',
   styleUrls: ['./ordersHeader-grid.component.css'],
-  providers: [DataGridService],
+  providers: [OrdersHeaderService],
 })
-export class DataGridComponent implements OnInit {
+
+export class OrdersHeaderComponent implements OnInit {
   dataSource!: DataSource;
   collapsed = false;
   isLoading = true; 
   hasError = false; 
-  errorMessage = ''; 
+  errorMessage = '';
+  isAdding = false;
+  isEditing = false;
 
-  constructor(private service: DataGridService) {}
+  constructor(private service: OrdersHeaderService) {}
+
+  contentReady = (e: ContentReadyEvent) => {
+    if (!this.collapsed) {
+      this.collapsed = true;
+      e.component.expandRow([1]);
+    }
+  };
+
+  onEditingStart(e: any): void {
+    this.isEditing = true;
+    this.isAdding = false;
+  }
+
+  onInitNewRow(e: any): void {
+    this.isAdding = true;
+    this.isEditing = false;
+  }
 
   onRowInserting(e: any): void {
-    if (!e.data.roleName || e.data.roleName.trim() === '') {
+    
+    if (e.data.orderDate >= e.data.dueDate) {
+      notify('Order date must be less than due date', 'error', 3000);
       e.cancel = true;
       return;
     }
 
-    const existingRoles = this.dataSource.items();
-    const isDuplicate = existingRoles.find(
-      (role: any) => role.roleName.toLowerCase().trim() === e.data.roleName.toLowerCase().trim()
-    );
-
-    if (isDuplicate) {
+    if(e.data.shipDate >= e.data.dueDate) {
+      notify('Ship date must be less than due date', 'error', 3000);
       e.cancel = true;
-      notify('A role with this name already exists. Please choose a different name.', 'error', 3000);
       return;
     }
 
-    const newRole = {
+    const newOrder = {
       ...e.data,
-      createdBy: 1,
-      creationDatetime: new Date(),
-      modifiedBy: 1,
-      modificationDatetime: new Date(),
-    };
+      "revisionNumber": 8,
+      "orderDate": e.data.orderDate+"Z",
+      "dueDate": e.data.dueDate+"Z",
+      "shipDate": e.data.shipDate+"Z",
+      "onlineOrderFlag": true,
+      "purchaseOrderNumber": "SO43662",
+      "accountNumber": "PO18444174044",
+      "customerId": 29994,
+      "salesPersonId": 282,
+      "territoryId": 6,
+      "billToAddressId": 482,
+      "shipToAddressId": 482,
+      "shipMethodId": 5,
+      "creditCardId": 10456,
+      "creditCardApprovalCode": "125295Vi53935",
+      "currencyRateId": 4,
+      "subTotal": 28832.5289,
+      "taxAmt": 2775.1646,
+      "freight": 867.2389,
+      "comment": "string"
+    }
+    
 
     e.promise = this.service
-      .create(newRole)
+      .create(newOrder)
       .toPromise()
       .then((response) => {
         this.loadData();
@@ -53,28 +87,30 @@ export class DataGridComponent implements OnInit {
       })
       .catch((error) => {
         e.cancel = true;
-        notify(error.error, 'error', 3000);
+        notify(error, 'error', 10000);
       });
   }
 
   onRowUpdating(e: any): void {
-    const updatedRole = {
-      ...e.oldData,
-      ...e.newData,
-      modifiedBy: 1,
-      modificationDatetime: new Date(),
-    };
+    
+    
+    // const updatedRole = {
+    //   ...e.oldData,
+    //   ...e.newData,
+    //   modifiedBy: 1,
+    //   modificationDatetime: new Date(),
+    // };
 
-    e.promise = this.service
-      .update(e.key, updatedRole)
-      .toPromise()
-      .then((response) => {
-        return response;
-      })
-      .catch((error) => {
-        e.cancel = true;
-        throw error;
-      });
+    // e.promise = this.service
+    //   .update(e.key, updatedRole)
+    //   .toPromise()
+    //   .then((response) => {
+    //     return response;
+    //   })
+    //   .catch((error) => {
+    //     e.cancel = true;
+    //     throw error;
+    //   });
   }
 
   onRowRemoving(e: any): void {
@@ -144,13 +180,6 @@ export class DataGridComponent implements OnInit {
   retryLoad() {
     this.loadData();
   }
-
-  contentReady = (e: ContentReadyEvent) => {
-    if (!this.collapsed) {
-      this.collapsed = true;
-      e.component.expandRow([1]);
-    }
-  };
 
   customizeTooltip = ({ originalValue }: Record<string, string>) => ({
      text: `${parseInt(originalValue)}%` 
