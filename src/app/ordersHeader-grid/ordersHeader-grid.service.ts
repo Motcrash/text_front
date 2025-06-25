@@ -5,28 +5,41 @@ import 'devextreme/data/odata/store';
 import DataSource from 'devextreme/data/data_source';
 
 interface IOrdersHeader {
-  idRole: number;
-  roleName: string;
-  description: string;
-  active: boolean;
-  createdBy: number;
-  creationDatetime: Date;
-  modifiedBy: number;
-  modificationDatetime: Date;
+  revisionNumber: number,
+  orderDate: Date,
+  dueDate: Date,
+  shipDate: Date,
+  status: number,
+  onlineOrderFlag: true,
+  purchaseOrderNumber: string,
+  accountNumber: string,
+  customerId: number,
+  salesPersonId: number,
+  territoryId: number,
+  billToAddressId: number,
+  shipToAddressId: number,
+  shipMethodId: number,
+  creditCardId: number,
+  creditCardApprovalCode: string,
+  currencyRateId: number,
+  subTotal: number,
+  taxAmt: number,
+  freight: number,
+  comment: string
 }
 
 @Injectable()
-export class DataGridService {
+export class OrdersHeaderService {
   private apiUrl = 'https://localhost:7229/api/SalesOrderHeader';
   constructor(private http: HttpClient) {}
 
   getData(): Observable<any[]> {
-    var res = this.http.get<any[]>(this.apiUrl);
+    var res = this.http.get<IOrdersHeader[]>(this.apiUrl);
     return res;
   }
 
-  create(role: IOrdersHeader): Observable<IOrdersHeader> {
-    return this.http.post<IOrdersHeader>(this.apiUrl, role).pipe(
+  create(order: IOrdersHeader): Observable<IOrdersHeader> {
+    return this.http.post<IOrdersHeader>(this.apiUrl, order).pipe(
       tap(() => console.log('POST Success')),
       catchError((error) => {
         throw error;
