@@ -72,7 +72,7 @@ export class RoleViewsService {
   }
 
   getViewsByRole(id: number): Observable<any[]>{
-    var res = this.http.get<IRoleView[]>(`${this.apiUrl}/${id}`);
+    var res = this.http.get<IRoleView[]>(`${this.apiUrl}/${id}/views`);
     return res;
   }
 }
