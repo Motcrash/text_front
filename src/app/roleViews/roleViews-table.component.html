@@ -16,7 +16,8 @@
   </div>
 </div>
 
-<div class="roles-dropdown">
+<div class="roles-dropdown"
+*ngIf="!isLoading && !hasError">
   <dx-select-box
     [items]="roles"
     [displayExpr]="'roleName'"
@@ -56,20 +57,6 @@
   ></dxo-search-panel>
   <dxo-group-panel [visible]="false"></dxo-group-panel>
   <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
-
-  <dxi-column
-    dataField="idRole"
-    caption="Role"
-    [width]="150"
-    [allowEditing]="false"
-  >
-    <dxo-lookup
-      [dataSource]="rolesDataSource"
-      valueExpr="idRole"
-      displayExpr="roleName"
-    >
-    </dxo-lookup>
-  </dxi-column>
 
   <dxi-column
     dataField="idView"
