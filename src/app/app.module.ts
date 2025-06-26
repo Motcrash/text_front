@@ -34,6 +34,7 @@ import { DxBulletModule,
     DxTemplateModule,
     DxBulletModule,
     DxSelectBoxModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent] 
