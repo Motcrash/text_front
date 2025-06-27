@@ -17,6 +17,7 @@ export class OrdersHeaderComponent implements OnInit {
   orderDetailsDataSource: any[] = [];
   productsDataSource: any[] = [];
   selectedOrderId: number | null = null;
+  expandedRowKey: any = null;
 
   newDetails: any[] = [];
 
@@ -40,8 +41,27 @@ export class OrdersHeaderComponent implements OnInit {
     }
   };
 
+  onRowExpanding(e: any): void {
+    const grid = e.component;
+    
+    
+    if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
+      
+      grid.collapseRow(this.expandedRowKey);
+    }
+    
+    
+    this.expandedRowKey = e.key;
+    
+    
+    this.selectedOrderId = e.key;
+    this.loadOrderDetails(this.selectedOrderId!);
+  }
+
   onEditingStart(e: any): void {
+    
     this.isEditing = true;
+    console.log(this.isEditing);
     this.isAdding = false;
 
     this.selectedOrderId = e.data.salesOrderId;
@@ -53,6 +73,10 @@ export class OrdersHeaderComponent implements OnInit {
     this.isAdding = true;
     this.isEditing = false;
     this.selectedOrderId = null;
+
+    e.data.orderQty = 1;
+    e.data.unitPriceDiscount = 0;
+
     if (this.newDetails.length === 0) this.orderDetailsDataSource = [];
   }
 
@@ -72,79 +96,54 @@ export class OrdersHeaderComponent implements OnInit {
 
     const newOrder = {
       ...e.data,
-      "revisionNumber": 8,
-      "orderDate": e.data.orderDate+"Z",
-      "dueDate": e.data.dueDate+"Z",
-      "shipDate": e.data.shipDate+"Z",
-      "onlineOrderFlag": true,
-      "purchaseOrderNumber": "SO43662",
-      "accountNumber": "PO18444174044",
-      "customerId": 29994,
-      "salesPersonId": 282,
-      "territoryId": 6,
-      "billToAddressId": 482,
-      "shipToAddressId": 482,
-      "shipMethodId": 5,
-      "creditCardId": 10456,
-      "creditCardApprovalCode": "125295Vi53935",
-      "currencyRateId": 4,
-      "subTotal": 28832.5289,
-      "taxAmt": 2775.1646,
-      "freight": 867.2389,
-      "comment": "string"
+      revisionNumber: 8,
+      orderDate: e.data.orderDate+"Z",
+      dueDate: e.data.dueDate+"Z",
+      shipDate: e.data.shipDate+"Z",
+      onlineOrderFlag: true,
+      purchaseOrderNumber: "SO43662",
+      accountNumber: "PO18444174044",
+      customerId: 29994,
+      salesPersonId: 282,
+      territoryId: 6,
+      billToAddressId: 482,
+      shipToAddressId: 482,
+      shipMethodId: 5,
+      creditCardId: 10456,
+      creditCardApprovalCode: "125295Vi53935",
+      currencyRateId: 4,
+      taxAmt: e.data.subTotal * 0.16,
+      freight: e.data.subTotal * 0.8,
     }
 
-    // Encadenar las promesas en el orden correcto
   e.promise = this.service
-    .create(newOrder)  // 1. Primero crear la orden
+    .create(newOrder)
     .toPromise()
     .then((createResponse) => {
-      console.log('Order created:', createResponse);
-      
-      // 2. Luego obtener el último detalle
       return this.service.getLastDetail().toPromise();
     })
     .then((lastDetailResponse) => {
-      console.log('Last detail response:', lastDetailResponse);
-      console.log('Sales Order ID:', lastDetailResponse?.salesOrderId);
-      
-      // Actualizar newDetails con el salesOrderId correcto
       this.newDetails = this.newDetails.map((detail) => ({
         ...detail,
         salesOrderId: lastDetailResponse!.salesOrderId
       }));
-      
-      console.log('Updated newDetails:', this.newDetails);
-      
-      // 3. Finalmente crear los detalles de la orden (solo si hay detalles)
+    
       if (this.newDetails.length > 0) {
         return this.service.createOrderDetails(this.newDetails).toPromise();
       } else {
-        return Promise.resolve([]); // Retornar promesa vacía si no hay detalles
+        return Promise.resolve([]);
       }
     })
     .then((orderDetailsResponse) => {
-      console.log('Order details created:', orderDetailsResponse);
-      
-      // Limpiar los detalles nuevos después de crearlos exitosamente
       this.clearNewDetails();
-      
-      // Recargar los datos
       this.loadData();
-      
-      // Mostrar notificación de éxito
-      if (this.newDetails.length > 0) {
-        notify('Order and details created successfully', 'success', 3000);
-      } else {
-        notify('Order created successfully', 'success', 3000);
-      }
-      
+      notify('Order created successfully', 'success', 3000);
       return orderDetailsResponse;
     })
     .catch((error) => {
       console.error('Error in order creation process:', error);
       e.cancel = true;
-      notify('Error creating order: ' + (error.message || error), 'error', 10000);
+      notify('Error creating order', 'error', 10000);
       throw error;
     });
   }
@@ -164,10 +163,24 @@ export class OrdersHeaderComponent implements OnInit {
     this.loadOrderDetails(salesOrderId);
 }
   onOrderDetailInserting(e: any): void {
+    console.log(e);
+    
     const productExists = this.newDetails.find(p => p.productId == e.data.productId);
     if (productExists) {
       e.cancel = true;
       notify('Product already exists in the order details', 'error', 3000);
+      return;
+    }
+
+    if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 100) {
+      e.cancel = true;
+      notify('Unit Price Discount must be between 0 and 100', 'error', 3000);
+      return;
+    }
+
+    if (e.data.orderQty <= 0) {
+      e.cancel = true;
+      notify('Quantity must be greater than zero', 'error', 3000);
       return;
     }
 
@@ -176,10 +189,10 @@ export class OrdersHeaderComponent implements OnInit {
       salesOrderId: null,
       CarrierTrackingNumber: '01F1-4AD5-A5',
       specialOfferId: 1,
-      rowguid: '22DB5FA8-8C63-4A68-A038-435EFD6D7EA2',
-      modifiedDate: new Date().toISOString()
+      rowguid: crypto.randomUUID(),
+      modifiedDate: new Date().toISOString(),
+      unitPriceDiscount: e.data.unitPriceDiscount / 100,
     });
-    console.log(this.newDetails);
   }
 
   onOrderDetailUpdating(e: any): void {
@@ -225,15 +238,6 @@ export class OrdersHeaderComponent implements OnInit {
 }
 
   onRowUpdating(e: any): void {
-    
-    
-    // const updatedRole = {
-    //   ...e.oldData,
-    //   ...e.newData,
-    //   modifiedBy: 1,
-    //   modificationDatetime: new Date(),
-    // };
-
     // e.promise = this.service
     //   .update(e.key, updatedRole)
     //   .toPromise()
