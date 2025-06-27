@@ -21,8 +21,8 @@ export class OrdersHeaderComponent implements OnInit {
   newDetails: any[] = [];
 
   collapsed = false;
-  isLoading = true; 
-  hasError = false; 
+  isLoading = true;
+  hasError = false;
   errorMessage = '';
   isAdding = false;
   isEditing = false;
@@ -45,7 +45,7 @@ export class OrdersHeaderComponent implements OnInit {
     this.isAdding = false;
 
     this.selectedOrderId = e.data.salesOrderId;
-    
+
     this.loadOrderDetails(this.selectedOrderId!);
   }
 
@@ -57,7 +57,7 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   onRowInserting(e: any): void {
-    
+
     if (e.data.orderDate >= e.data.dueDate) {
       notify('Order date must be less than due date', 'error', 3000);
       e.cancel = true;
@@ -72,27 +72,32 @@ export class OrdersHeaderComponent implements OnInit {
 
     const newOrder = {
       ...e.data,
-      "revisionNumber": 8,
-      "orderDate": e.data.orderDate+"Z",
-      "dueDate": e.data.dueDate+"Z",
-      "shipDate": e.data.shipDate+"Z",
-      "onlineOrderFlag": true,
-      "purchaseOrderNumber": "SO43662",
-      "accountNumber": "PO18444174044",
-      "customerId": 29994,
-      "salesPersonId": 282,
-      "territoryId": 6,
-      "billToAddressId": 482,
-      "shipToAddressId": 482,
-      "shipMethodId": 5,
-      "creditCardId": 10456,
-      "creditCardApprovalCode": "125295Vi53935",
-      "currencyRateId": 4,
-      "subTotal": 28832.5289,
-      "taxAmt": 2775.1646,
-      "freight": 867.2389,
-      "comment": "string"
+      revisionNumber: 8,
+      orderDate: e.data.orderDate+"Z",
+      dueDate: e.data.dueDate+"Z",
+      shipDate: e.data.shipDate+"Z",
+      onlineOrderFlag: true,
+      purchaseOrderNumber: "SO43662",
+      accountNumber: "PO18444174044",
+      customerId: 29994,
+      salesPersonId: 282,
+      territoryId: 6,
+      billToAddressId: 482,
+      shipToAddressId: 482,
+      shipMethodId: 5,
+      creditCardId: 10456,
+      creditCardApprovalCode: "125295Vi53935",
+      currencyRateId: 4,
+      subTotal: 20565.6206,
+      taxAmt: 1971.5149,
+      freight: 616.0984,
+      totalDue: 23153.2339,
+      comment: "string"
     }
+
+    console.log('NewOrder: ', newOrder);
+    console.log('NewDetails: ', this.newDetails);
+
 
     // Encadenar las promesas en el orden correcto
   e.promise = this.service
@@ -100,22 +105,22 @@ export class OrdersHeaderComponent implements OnInit {
     .toPromise()
     .then((createResponse) => {
       console.log('Order created:', createResponse);
-      
+
       // 2. Luego obtener el último detalle
       return this.service.getLastDetail().toPromise();
     })
     .then((lastDetailResponse) => {
       console.log('Last detail response:', lastDetailResponse);
       console.log('Sales Order ID:', lastDetailResponse?.salesOrderId);
-      
+
       // Actualizar newDetails con el salesOrderId correcto
       this.newDetails = this.newDetails.map((detail) => ({
         ...detail,
         salesOrderId: lastDetailResponse!.salesOrderId
       }));
-      
+
       console.log('Updated newDetails:', this.newDetails);
-      
+
       // 3. Finalmente crear los detalles de la orden (solo si hay detalles)
       if (this.newDetails.length > 0) {
         return this.service.createOrderDetails(this.newDetails).toPromise();
@@ -125,20 +130,20 @@ export class OrdersHeaderComponent implements OnInit {
     })
     .then((orderDetailsResponse) => {
       console.log('Order details created:', orderDetailsResponse);
-      
+
       // Limpiar los detalles nuevos después de crearlos exitosamente
       this.clearNewDetails();
-      
+
       // Recargar los datos
       this.loadData();
-      
+
       // Mostrar notificación de éxito
       if (this.newDetails.length > 0) {
         notify('Order and details created successfully', 'success', 3000);
       } else {
         notify('Order created successfully', 'success', 3000);
       }
-      
+
       return orderDetailsResponse;
     })
     .catch((error) => {
@@ -198,9 +203,9 @@ export class OrdersHeaderComponent implements OnInit {
       this.recalculateLineTotal(e);
     };
   }
-  
+
   if (e.dataField === 'orderQty' && e.parentType === 'dataRow') {
-    
+
     e.editorOptions.onValueChanged = (args: any) => {
       e.component.cellValue(e.row.rowIndex, 'orderQty', args.value);
       this.recalculateLineTotal(e);
@@ -208,7 +213,7 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   if (e.dataField === 'unitPriceDiscount' && e.parentType === 'dataRow') {
-    
+
     e.editorOptions.onValueChanged = (args: any) => {
       e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount', args.value);
       this.recalculateLineTotal(e);
@@ -225,8 +230,8 @@ export class OrdersHeaderComponent implements OnInit {
 }
 
   onRowUpdating(e: any): void {
-    
-    
+
+
     // const updatedRole = {
     //   ...e.oldData,
     //   ...e.newData,
@@ -285,7 +290,7 @@ export class OrdersHeaderComponent implements OnInit {
   private loadData() {
     this.isLoading = true;
     this.hasError = false;
-    
+
     this.dataSource = new DataSource({
       store: {
         type: 'array',
@@ -308,7 +313,7 @@ export class OrdersHeaderComponent implements OnInit {
             paginate: true,
             pageSize: 20
           });
-          
+
           this.isLoading = false;
         } else {
           this.hasError = true;
@@ -330,6 +335,6 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   customizeTooltip = ({ originalValue }: Record<string, string>) => ({
-     text: `${parseInt(originalValue)}%` 
+     text: `${parseInt(originalValue)}%`
   });
 }
