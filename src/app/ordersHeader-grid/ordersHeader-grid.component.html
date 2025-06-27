@@ -60,9 +60,15 @@
         <dxi-item dataField="orderDate" [isRequired]="isEditing" [disabled]="isEditing"></dxi-item>
         <dxi-item dataField="dueDate" [isRequired]="true"></dxi-item>
         <dxi-item dataField="shipDate" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="status" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="subTotal" [disabled]="true"></dxi-item>
-        <dxi-item dataField="totalDue" [disabled]="true"></dxi-item>
+        <dxi-item dataField="status" [isRequired]="true">
+          <dxo-lookup 
+            [dataSource]="statusDictionary" 
+            valueExpr="id" 
+            displayExpr="name">
+          </dxo-lookup>
+        </dxi-item>
+        <dxi-item dataField="subTotal" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="totalDue" [isRequired]="true"></dxi-item>
         <dxi-item dataField="comment" [colSpan]="2"></dxi-item>
       </dxi-item>
 
@@ -120,6 +126,17 @@
                 </dxo-summary>
 
                 <dxi-column dataField="specialOfferProduct.product.name" caption="Product" [width]="200"></dxi-column>
+                <dxi-column 
+    dataField="status" 
+    dataType="number"
+    caption="Status"
+  >
+    <dxo-lookup 
+      [dataSource]="statusDictionary" 
+      valueExpr="id" 
+      displayExpr="name">
+    </dxo-lookup>
+  </dxi-column>
       <dxi-column dataField="orderQty" caption="Quantity" dataType="number" [width]="100"></dxi-column>
       <dxi-column dataField="unitPrice" caption="Unit Price" dataType="number" format="currency" [width]="120"></dxi-column>
       <dxi-column dataField="unitPriceDiscount" dataType="number" caption="Discount" format="percent" [width]="100"></dxi-column>
@@ -184,7 +201,13 @@
     dataField="status" 
     dataType="number"
     caption="Status"
-  ></dxi-column>
+  >
+
+<dxo-lookup 
+      [dataSource]="statusDictionary" 
+      valueExpr="id" 
+      displayExpr="name">
+    </dxo-lookup></dxi-column>
   
   <dxi-column
     dataField="comment"
@@ -225,7 +248,7 @@
       <dxo-editing
         mode="row"
         [allowUpdating]="true"
-        [allowAdding]="true"
+        [allowAdding]="isAdding"
         [allowDeleting]="true"
         [useIcons]="true"
       >

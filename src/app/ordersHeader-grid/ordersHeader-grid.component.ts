@@ -28,6 +28,14 @@ export class OrdersHeaderComponent implements OnInit {
   isAdding = false;
   isEditing = false;
 
+  statusDictionary = [
+    { id: 1, name: 'In Process' },
+    { id: 2, name: 'Approved' },
+    { id: 3, name: 'Backordered' },
+    { id: 4, name: 'Rejected' },
+    { id: 5, name: 'Shipped' },
+    { id: 6, name: 'Cancelled' }
+  ];
 
   constructor(
     private service: OrdersHeaderService,
@@ -61,7 +69,6 @@ export class OrdersHeaderComponent implements OnInit {
   onEditingStart(e: any): void {
     
     this.isEditing = true;
-    console.log(this.isEditing);
     this.isAdding = false;
 
     this.selectedOrderId = e.data.salesOrderId;
@@ -163,18 +170,9 @@ export class OrdersHeaderComponent implements OnInit {
     this.loadOrderDetails(salesOrderId);
 }
   onOrderDetailInserting(e: any): void {
-    console.log(e);
-    
-    const productExists = this.newDetails.find(p => p.productId == e.data.productId);
-    if (productExists) {
+    if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 1) {
       e.cancel = true;
-      notify('Product already exists in the order details', 'error', 3000);
-      return;
-    }
-
-    if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 100) {
-      e.cancel = true;
-      notify('Unit Price Discount must be between 0 and 100', 'error', 3000);
+      notify('Unit Price Discount must be between 0 and 1', 'error', 3000);
       return;
     }
 
@@ -184,6 +182,29 @@ export class OrdersHeaderComponent implements OnInit {
       return;
     }
 
+    const productExists = this.newDetails.find(p => p.productId == e.data.productId);
+    if (productExists) {
+      if (e.data.quantity){
+        productExists.quantity += e.data.orderQty;
+        e.component.cellValue(e.row.rowIndex, 'orderQty', productExists.orderQty);
+      }
+
+      if (e.data.lineTotal){
+        productExists.lineTotal += e.data.lineTotal;
+        e.component.cellValue(e.row.rowIndex, 'lineTotal', productExists.lineTotal);
+      }
+
+      if (e.data.unitPriceDiscount){
+        if (productExists.unitPriceDiscount > e.data.unitPriceDiscount) {
+          productExists.unitPriceDiscount += e.data.unitPriceDiscount;
+          e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount', productExists.unitPriceDiscount);
+        }
+      }
+      e.cancel = true;
+      notify('Detail added successfully', 'success', 3000);
+      return
+    }
+
     this.newDetails.push({
       ...e.data,
       salesOrderId: null,
@@ -191,15 +212,53 @@ export class OrdersHeaderComponent implements OnInit {
       specialOfferId: 1,
       rowguid: crypto.randomUUID(),
       modifiedDate: new Date().toISOString(),
-      unitPriceDiscount: e.data.unitPriceDiscount / 100,
+      unitPriceDiscount: parseInt(e.data.unitPriceDiscount, 10),
     });
+
+    console.log(this.newDetails);
+
+
+    notify('Detail added successfully', 'success', 3000);
   }
 
   onOrderDetailUpdating(e: any): void {
-    console.log('Updating');
+    const updatedDetail = {
+      ...e.oldData,
+      ...e.newData,
+      rowguid: crypto.randomUUID()
+    };
+
+    if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 1) {
+      e.cancel = true;
+      notify('Unit Price Discount must be between 0 and 1', 'error', 3000);
+      return;
+    }
+
+    console.log('Updated Detail:', updatedDetail);
+    
+    
+    e.promise = this.service
+      .updateOrderDetail(updatedDetail.salesOrderId, updatedDetail.salesOrderDetailId, updatedDetail)
+      .toPromise()
+      .then((response) => {
+        return response;
+      })
+      .catch((error) => {
+        e.cancel = true;
+        throw error;
+      });
   }
   onOrderDetailRemoving(e: any): void {
-    console.log('Removing');
+    e.promise = this.service
+      .deleteOrderDetail(e.data.salesOrderId, e.data.salesOrderDetailId)
+      .toPromise()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('Delete failed');
+        e.cancel = true;
+        throw error;
+      });
   }
 
   onEditorPreparing(e: any): void {
@@ -248,6 +307,7 @@ export class OrdersHeaderComponent implements OnInit {
     //     e.cancel = true;
     //     throw error;
     //   });
+    notify('Row updated successfully', 'success', 3000);
   }
 
   onRowRemoving(e: any): void {
