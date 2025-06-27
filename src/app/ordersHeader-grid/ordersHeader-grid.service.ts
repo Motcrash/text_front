@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, forkJoin, Observable, retry, tap, throwError } from 'rxjs';
+import { catchError, concatMap, delay, forkJoin, from, Observable, retry, tap, throwError, toArray } from 'rxjs';
 import 'devextreme/data/odata/store';
 import DataSource from 'devextreme/data/data_source';
 
@@ -110,15 +110,30 @@ export class OrdersHeaderService {
   }
 
   createOrderDetails(orderDetails: IDetails[]): Observable<IDetails[]> {
-  const requests = orderDetails.map(detail => {
-    return this.http.post<IDetails>(this.orderDetailsApi, detail).pipe(
-      tap(() => console.log('POST Success for detail:', detail)),
-      catchError((error) => {
-        console.error('POST Error for detail:', detail, error);
-        throw error;
-      })
-    );
-  });
-  return forkJoin(requests);
+  // const requests = orderDetails.map(detail => {
+  //   return this.http.post<IDetails>(this.orderDetailsApi, detail).pipe(
+  //     tap(() => console.log('POST Success for detail:', detail)),
+  //     catchError((error) => {
+  //       console.error('POST Error for detail:', detail, error);
+  //       throw error;
+  //     })
+  //   );
+  // });
+  // return forkJoin(requests);
+
+  return from(orderDetails).pipe(
+    concatMap((detail, index) => 
+      this.http.post<IDetails>(this.orderDetailsApi, detail).pipe(
+        delay(index * 100), // Agregar un pequeño delay entre peticiones
+        tap(() => console.log('POST Success for detail:', detail)),
+        catchError((error) => {
+          console.error('POST Error for detail:', detail, error);
+          throw error;
+        })
+      )
+    ),
+    toArray() // Convierte el stream de elementos individuales en un array
+  );
+  
 }
 }
