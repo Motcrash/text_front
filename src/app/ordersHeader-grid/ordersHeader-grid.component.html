@@ -102,11 +102,18 @@
                 </dxo-pager>
 
                 <dxo-summary>
-                  <dxi-total-item 
-                    column="lineTotal" 
-                    summaryType="sum" 
+                  <dxi-total-item
+                    column="lineTotal"
+                    summaryType="sum"
                     [displayFormat]="'Total: {0}'"
                     [valueFormat]="'currency'"
+                    [showInColumn]="'lineTotal'">
+                  </dxi-total-item>
+
+                  <dxi-total-item
+                    column="orderQty"
+                    summaryType="sum"
+                    [displayFormat]="'Products: {0}'"
                     [showInColumn]="'lineTotal'">
                   </dxi-total-item>
                 </dxo-summary>
@@ -124,12 +131,12 @@
     [showPageSizeSelector]="true"
     [allowedPageSizes]="[10, 15, 20]"
   ></dxo-pager>
-  
+
   <dxo-search-panel
     [visible]="true"
     [highlightCaseSensitive]="true"
   ></dxo-search-panel>
-  
+
   <dxo-group-panel [visible]="false"></dxo-group-panel>
   <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
 
@@ -138,53 +145,53 @@
     dataType="text"
     caption="Order Number"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="orderDate"
     dataType="date"
     caption="Order Date"
     format="shortDate"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="dueDate"
     dataType="date"
     caption="Due Date"
     format="shortDate"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="shipDate"
     dataType="date"
     caption="Ship Date"
     format="shortDate"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="customer.person.firstName"
     dataType="text"
     caption="Customer"
   ></dxi-column>
-  
-  <dxi-column 
-    dataField="status" 
+
+  <dxi-column
+    dataField="status"
     dataType="number"
     caption="Status"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="comment"
     dataType="text"
     caption="Comment"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="subTotal"
     dataType="number"
     caption="Subtotal"
     format="currency"
   ></dxi-column>
-  
+
   <dxi-column
     dataField="totalDue"
     dataType="number"
@@ -207,7 +214,7 @@
       (onEditingStart)="onEditingStart($event)"
       (onEditorPreparing)="onEditorPreparing($event)"
       >
-      
+
       <dxo-editing
         mode="row"
         [allowUpdating]="true"
@@ -220,19 +227,26 @@
       <dxo-paging [pageSize]="10"></dxo-paging>
 
       <dxo-summary>
-      <dxi-total-item 
-        column="lineTotal" 
-        summaryType="sum" 
+      <dxi-total-item
+        column="lineTotal"
+        summaryType="sum"
         [displayFormat]="'Total: {0}'"
         [valueFormat]="'currency'"
+        [showInColumn]="'lineTotal'">
+      </dxi-total-item>
+
+      <dxi-total-item
+        column="orderQty"
+        summaryType="sum"
+        [displayFormat]="'Products: {0}'"
         [showInColumn]="'lineTotal'">
       </dxi-total-item>
     </dxo-summary>
 
       <dxi-column dataField="productId" caption="Product" [width]="200">
-        <dxo-lookup 
-            [dataSource]="productsDataSource" 
-            valueExpr="productId" 
+        <dxo-lookup
+            [dataSource]="productsDataSource"
+            valueExpr="productId"
             displayExpr="name">
         </dxo-lookup>
       </dxi-column>
