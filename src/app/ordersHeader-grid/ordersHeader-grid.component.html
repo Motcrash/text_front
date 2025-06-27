@@ -31,6 +31,7 @@
   (onRowInserting)="onRowInserting($event)"
   (onInitNewRow)="onInitNewRow($event)"
   (onEditingStart)="onEditingStart($event)"
+  (onRowExpanding)="onRowExpanding($event)"
 >
   <dxo-paging [pageSize]="15"></dxo-paging>
 
@@ -38,7 +39,6 @@
     mode="popup"
     [allowUpdating]="true"
     [allowAdding]="true"
-    [allowDeleting]="true"
     [useIcons]="true"
   >
     <dxo-popup
@@ -56,12 +56,13 @@
         [colCount]="2"
         [colSpan]="2"
       >
-        <dxi-item dataField="orderDate" [isRequired]="true"></dxi-item>
+
+        <dxi-item dataField="orderDate" [isRequired]="isEditing" [disabled]="isEditing"></dxi-item>
         <dxi-item dataField="dueDate" [isRequired]="true"></dxi-item>
         <dxi-item dataField="shipDate" [isRequired]="true"></dxi-item>
         <dxi-item dataField="status" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="subTotal" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="totalDue" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="subTotal" [disabled]="true"></dxi-item>
+        <dxi-item dataField="totalDue" [disabled]="true"></dxi-item>
         <dxi-item dataField="comment" [colSpan]="2"></dxi-item>
       </dxi-item>
 
@@ -109,13 +110,20 @@
                     [valueFormat]="'currency'"
                     [showInColumn]="'lineTotal'">
                   </dxi-total-item>
+
+                  <dxi-total-item 
+                    column="orderQty" 
+                    summaryType="sum" 
+                    [displayFormat]="'Products: {0}'"
+                    [showInColumn]="'lineTotal'">
+                  </dxi-total-item>
                 </dxo-summary>
 
                 <dxi-column dataField="specialOfferProduct.product.name" caption="Product" [width]="200"></dxi-column>
-      <dxi-column dataField="orderQty" caption="Quantity" [width]="100"></dxi-column>
-      <dxi-column dataField="unitPrice" caption="Unit Price" format="currency" [width]="120"></dxi-column>
-      <dxi-column dataField="unitPriceDiscount" caption="Discount" format="percent" [width]="100"></dxi-column>
-      <dxi-column dataField="lineTotal" caption="Line Total" format="currency" [width]="120"></dxi-column>
+      <dxi-column dataField="orderQty" caption="Quantity" dataType="number" [width]="100"></dxi-column>
+      <dxi-column dataField="unitPrice" caption="Unit Price" dataType="number" format="currency" [width]="120"></dxi-column>
+      <dxi-column dataField="unitPriceDiscount" dataType="number" caption="Discount" format="percent" [width]="100"></dxi-column>
+      <dxi-column dataField="lineTotal" caption="Line Total" dataType="number" format="currency" [width]="120"></dxi-column>
             </dx-data-grid>
         </div>
 
@@ -132,6 +140,12 @@
   
   <dxo-group-panel [visible]="false"></dxo-group-panel>
   <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
+
+  <dxi-column
+    dataField="salesOrderId"
+    dataType="text"
+    caption="Order ID"
+  ></dxi-column>
 
   <dxi-column
     dataField="salesOrderNumber"
@@ -227,6 +241,13 @@
         [valueFormat]="'currency'"
         [showInColumn]="'lineTotal'">
       </dxi-total-item>
+
+      <dxi-total-item 
+        column="orderQty" 
+        summaryType="sum" 
+        [displayFormat]="'Products: {0}'"
+        [showInColumn]="'lineTotal'">
+      </dxi-total-item>
     </dxo-summary>
 
       <dxi-column dataField="productId" caption="Product" [width]="200">
@@ -237,9 +258,9 @@
         </dxo-lookup>
       </dxi-column>
       <dxi-column dataField="orderQty" caption="Quantity" [width]="100"></dxi-column>
-      <dxi-column dataField="unitPrice" caption="Unit Price" format="currency" [width]="120"></dxi-column>
+      <dxi-column dataField="unitPrice" caption="Unit Price" [allowEditing]="false" format="currency" [width]="120"></dxi-column>
       <dxi-column dataField="unitPriceDiscount" caption="Discount" format="percent" [width]="100"></dxi-column>
-      <dxi-column dataField="lineTotal" caption="Line Total" format="currency" [width]="120"></dxi-column>
+      <dxi-column dataField="lineTotal" caption="Line Total" format="currency" [allowEditing]="false" [width]="120"></dxi-column>
 
     </dx-data-grid>
   </div>
