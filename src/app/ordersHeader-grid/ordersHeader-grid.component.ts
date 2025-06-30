@@ -52,27 +52,19 @@ export class OrdersHeaderComponent implements OnInit {
   onRowExpanding(e: any): void {
     const grid = e.component;
     
-    
     if (this.expandedRowKey !== null && this.expandedRowKey !== e.key) {
-      
       grid.collapseRow(this.expandedRowKey);
     }
-    
-    
-    this.expandedRowKey = e.key;
-    
-    
+
+    this.expandedRowKey = e.key;    
     this.selectedOrderId = e.key;
     this.loadOrderDetails(this.selectedOrderId!);
   }
 
   onEditingStart(e: any): void {
-    
     this.isEditing = true;
     this.isAdding = false;
-
     this.selectedOrderId = e.data.salesOrderId;
-
     this.loadOrderDetails(this.selectedOrderId!);
   }
 
@@ -121,6 +113,12 @@ export class OrdersHeaderComponent implements OnInit {
       currencyRateId: 4,
       taxAmt: e.data.subTotal * 0.16,
       freight: e.data.subTotal * 0.8,
+    }
+
+    if (this.newDetails.length == 0) {
+      e.cancel = true;
+      notify('Order details are required', 'error', 3000);
+      return;
     }
 
   e.promise = this.service
@@ -172,7 +170,7 @@ export class OrdersHeaderComponent implements OnInit {
   onOrderDetailInserting(e: any): void {
     if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 1) {
       e.cancel = true;
-      notify('Unit Price Discount must be between 0 and 1', 'error', 3000);
+      notify('Discount value must be between 0 and 1', 'error', 3000);
       return;
     }
 
@@ -210,7 +208,6 @@ export class OrdersHeaderComponent implements OnInit {
       salesOrderId: null,
       CarrierTrackingNumber: '01F1-4AD5-A5',
       specialOfferId: 1,
-      rowguid: crypto.randomUUID(),
       modifiedDate: new Date().toISOString(),
       unitPriceDiscount: parseInt(e.data.unitPriceDiscount, 10),
     });
@@ -221,21 +218,16 @@ export class OrdersHeaderComponent implements OnInit {
     notify('Detail added successfully', 'success', 3000);
   }
 
-  onOrderDetailUpdating(e: any): void {
+  onOrderDetailUpdating(e: any): void {   
     const updatedDetail = {
       ...e.oldData,
       ...e.newData,
-      rowguid: crypto.randomUUID()
     };
-
-    if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 1) {
+    if (updatedDetail.unitPriceDiscount < 0 || updatedDetail.unitPriceDiscount > 1) {
       e.cancel = true;
-      notify('Unit Price Discount must be between 0 and 1', 'error', 3000);
+      notify('Discount value must be between 0 and 1', 'error', 3000);
       return;
     }
-
-    console.log('Updated Detail:', updatedDetail);
-    
     
     e.promise = this.service
       .updateOrderDetail(updatedDetail.salesOrderId, updatedDetail.salesOrderDetailId, updatedDetail)
@@ -248,18 +240,31 @@ export class OrdersHeaderComponent implements OnInit {
         throw error;
       });
   }
+
   onOrderDetailRemoving(e: any): void {
+  const salesOrderId = e.data.salesOrderId;
+  const salesOrderDetailId = e.data.salesOrderDetailId;
+  const productId = e.data.productId;
+  
+  if (this.isEditing) {
     e.promise = this.service
-      .deleteOrderDetail(e.data.salesOrderId, e.data.salesOrderDetailId)
+      .deleteOrderDetail(salesOrderId, salesOrderDetailId)
       .toPromise()
       .then(() => {
+        notify('Order detail deleted successfully', 'success', 3000);
       })
       .catch((error) => {
         console.error('Delete failed');
         e.cancel = true;
         throw error;
       });
+  } else {
+    this.newDetails = this.newDetails.filter(detail => 
+      detail.productId !== productId && 
+      detail.salesOrderDetailId !== salesOrderDetailId
+    );
   }
+}
 
   onEditorPreparing(e: any): void {
   if (e.dataField === 'productId' && e.parentType === 'dataRow') {
@@ -291,24 +296,58 @@ export class OrdersHeaderComponent implements OnInit {
   private recalculateLineTotal(e: any): void {
   const qty = e.component.cellValue(e.row.rowIndex, 'orderQty') || 1;
   const unitPrice = e.component.cellValue(e.row.rowIndex, 'unitPrice') || 0;
-  const discount = e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount') || 0;
-  const lineTotal = qty * unitPrice * (1 - discount / 100);
+  const discount = parseFloat(e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount')) || 0;
+  if (discount < 0 || discount > 1) {
+    notify('Discount value must be between 0 and 1', 'error', 3000);
+    return;
+  }
+  const lineTotal = qty * unitPrice * (1 - discount);
+  console.log(lineTotal);
+  
   e.component.cellValue(e.row.rowIndex, 'lineTotal', lineTotal);
 }
 
   onRowUpdating(e: any): void {
-    // e.promise = this.service
-    //   .update(e.key, updatedRole)
-    //   .toPromise()
-    //   .then((response) => {
-    //     return response;
-    //   })
-    //   .catch((error) => {
-    //     e.cancel = true;
-    //     throw error;
-    //   });
-    notify('Row updated successfully', 'success', 3000);
+  const orderDate = e.newData.orderDate || e.oldData.orderDate;
+  const dueDate = e.newData.dueDate || e.oldData.dueDate;
+  
+  if (new Date(orderDate) > new Date(dueDate)) {
+    notify('Order date must be less than or equal to due date', 'error', 3000);
+    e.cancel = true;
+    return;
   }
+
+  const updatedOrderHeader = {
+    ...e.oldData,
+    ...e.newData,
+    orderDate: e.newData.orderDate ? this.formatDateForAPI(e.newData.orderDate) : e.oldData.orderDate,
+    dueDate: e.newData.dueDate ? this.formatDateForAPI(e.newData.dueDate) : e.oldData.dueDate,
+    shipDate: e.newData.shipDate ? this.formatDateForAPI(e.newData.shipDate) : e.oldData.shipDate,
+    taxAmt: e.newData.subTotal ? e.newData.subTotal * 0.16 : e.oldData.taxAmt,
+    freight: e.newData.subTotal ? e.newData.subTotal * 0.8 : e.oldData.freight,
+  }
+  e.promise = this.service
+    .update(e.key, updatedOrderHeader)
+    .toPromise()
+    .then((response) => {
+      this.loadData();
+      notify('Order Header updated successfully', 'success', 3000);
+      return response;
+    })
+    .catch((error) => {
+      e.cancel = true;
+      notify('Order Header updated failed', 'error', 3000);
+      throw error;
+    });
+}
+
+private formatDateForAPI(date: string | Date): string {
+  if (!date) return '';
+  
+  const dateObj = new Date(date);
+  if (isNaN(dateObj.getTime())) return '';
+  return dateObj.toISOString();
+}
 
   onRowRemoving(e: any): void {
     const id = e.key || e.data?.idRole;
