@@ -22,8 +22,8 @@ export class OrdersHeaderComponent implements OnInit {
   newDetails: any[] = [];
 
   collapsed = false;
-  isLoading = true; 
-  hasError = false; 
+  isLoading = true;
+  hasError = false;
   errorMessage = '';
   isAdding = false;
   isEditing = false;
@@ -72,7 +72,7 @@ export class OrdersHeaderComponent implements OnInit {
     this.isAdding = false;
 
     this.selectedOrderId = e.data.salesOrderId;
-    
+
     this.loadOrderDetails(this.selectedOrderId!);
   }
 
@@ -88,7 +88,7 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   onRowInserting(e: any): void {
-    
+
     if (e.data.orderDate >= e.data.dueDate) {
       notify('Order date must be less than due date', 'error', 3000);
       e.cancel = true;
@@ -270,9 +270,9 @@ export class OrdersHeaderComponent implements OnInit {
       this.recalculateLineTotal(e);
     };
   }
-  
+
   if (e.dataField === 'orderQty' && e.parentType === 'dataRow') {
-    
+
     e.editorOptions.onValueChanged = (args: any) => {
       e.component.cellValue(e.row.rowIndex, 'orderQty', args.value);
       this.recalculateLineTotal(e);
@@ -280,7 +280,7 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   if (e.dataField === 'unitPriceDiscount' && e.parentType === 'dataRow') {
-    
+
     e.editorOptions.onValueChanged = (args: any) => {
       e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount', args.value);
       this.recalculateLineTotal(e);
@@ -349,7 +349,7 @@ export class OrdersHeaderComponent implements OnInit {
   private loadData() {
     this.isLoading = true;
     this.hasError = false;
-    
+
     this.dataSource = new DataSource({
       store: {
         type: 'array',
@@ -372,7 +372,7 @@ export class OrdersHeaderComponent implements OnInit {
             paginate: true,
             pageSize: 20
           });
-          
+
           this.isLoading = false;
         } else {
           this.hasError = true;
@@ -394,6 +394,6 @@ export class OrdersHeaderComponent implements OnInit {
   }
 
   customizeTooltip = ({ originalValue }: Record<string, string>) => ({
-     text: `${parseInt(originalValue)}%` 
+     text: `${parseInt(originalValue)}%`
   });
 }
