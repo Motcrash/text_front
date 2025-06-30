@@ -168,6 +168,7 @@ export class OrdersHeaderComponent implements OnInit {
     this.loadOrderDetails(salesOrderId);
 }
   onOrderDetailInserting(e: any): void {
+    
     if (e.data.unitPriceDiscount < 0 || e.data.unitPriceDiscount > 1) {
       e.cancel = true;
       notify('Discount value must be between 0 and 1', 'error', 3000);
@@ -209,11 +210,8 @@ export class OrdersHeaderComponent implements OnInit {
       CarrierTrackingNumber: '01F1-4AD5-A5',
       specialOfferId: 1,
       modifiedDate: new Date().toISOString(),
-      unitPriceDiscount: parseInt(e.data.unitPriceDiscount, 10),
+      unitPriceDiscount: parseFloat(e.data.unitPriceDiscount),
     });
-
-    console.log(this.newDetails);
-
 
     notify('Detail added successfully', 'success', 3000);
   }
@@ -233,6 +231,7 @@ export class OrdersHeaderComponent implements OnInit {
       .updateOrderDetail(updatedDetail.salesOrderId, updatedDetail.salesOrderDetailId, updatedDetail)
       .toPromise()
       .then((response) => {
+        notify('Order detail updated successfully', 'success', 3000);
         return response;
       })
       .catch((error) => {
@@ -296,13 +295,13 @@ export class OrdersHeaderComponent implements OnInit {
   private recalculateLineTotal(e: any): void {
   const qty = e.component.cellValue(e.row.rowIndex, 'orderQty') || 1;
   const unitPrice = e.component.cellValue(e.row.rowIndex, 'unitPrice') || 0;
-  const discount = parseFloat(e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount')) || 0;
+  const discount = parseFloat(e.component.cellValue(e.row.rowIndex, 'unitPriceDiscount'));
+  
   if (discount < 0 || discount > 1) {
     notify('Discount value must be between 0 and 1', 'error', 3000);
     return;
   }
   const lineTotal = qty * unitPrice * (1 - discount);
-  console.log(lineTotal);
   
   e.component.cellValue(e.row.rowIndex, 'lineTotal', lineTotal);
 }
@@ -310,9 +309,22 @@ export class OrdersHeaderComponent implements OnInit {
   onRowUpdating(e: any): void {
   const orderDate = e.newData.orderDate || e.oldData.orderDate;
   const dueDate = e.newData.dueDate || e.oldData.dueDate;
+  const shipDate = e.newData.shipDate || e.oldData.shipDate;
   
   if (new Date(orderDate) > new Date(dueDate)) {
     notify('Order date must be less than or equal to due date', 'error', 3000);
+    e.cancel = true;
+    return;
+  }
+
+  if (new Date(shipDate) > new Date(dueDate)) {
+    notify('Ship date must be less than or equal to due date', 'error', 3000);
+    e.cancel = true;
+    return;
+  }
+  
+  if (new Date(orderDate) > new Date(shipDate)) {
+    notify('Ship date must be less than or equal to order date', 'error', 3000);
     e.cancel = true;
     return;
   }
