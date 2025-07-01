@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { UsersTableService } from './users-table.service';
-import { RoleGridService } from '../roles-table/role-grid.service';
+import { UsersTableService } from '../services/users.service';
+import { RoleGridService } from '../services/roles.service';
 import notify from 'devextreme/ui/notify';
 
 @Component({
