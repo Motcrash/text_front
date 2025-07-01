@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { OrdersHeaderService } from './ordersHeader-grid.service';
+import { OrdersHeaderService } from '../services/ordersHeader.service';
 import notify from 'devextreme/ui/notify';
 import { ProductsService } from '../services/products.service';
+import { ordersDetailService } from '../services/ordersDetail.service';
 
 @Component({
   selector: 'app-data-grid',
   templateUrl: './ordersHeader-grid.component.html',
   styleUrls: ['./ordersHeader-grid.component.css'],
-  providers: [OrdersHeaderService, ProductsService],
+  providers: [OrdersHeaderService, ordersDetailService, ProductsService],
 })
 
 export class OrdersHeaderComponent implements OnInit {
@@ -39,7 +40,8 @@ export class OrdersHeaderComponent implements OnInit {
 
   constructor(
     private service: OrdersHeaderService,
-    private productService: ProductsService
+    private productService: ProductsService,
+    private ordersDetailService: ordersDetailService
   ) {}
 
   contentReady = (e: ContentReadyEvent) => {
@@ -134,7 +136,7 @@ export class OrdersHeaderComponent implements OnInit {
       }));
     
       if (this.newDetails.length > 0) {
-        return this.service.createOrderDetails(this.newDetails).toPromise();
+        return this.ordersDetailService.createOrderDetails(this.newDetails).toPromise();
       } else {
         return Promise.resolve([]);
       }
@@ -227,7 +229,7 @@ export class OrdersHeaderComponent implements OnInit {
       return;
     }
     
-    e.promise = this.service
+    e.promise = this.ordersDetailService
       .updateOrderDetail(updatedDetail.salesOrderId, updatedDetail.salesOrderDetailId, updatedDetail)
       .toPromise()
       .then((response) => {
@@ -246,7 +248,7 @@ export class OrdersHeaderComponent implements OnInit {
   const productId = e.data.productId;
   
   if (this.isEditing) {
-    e.promise = this.service
+    e.promise = this.ordersDetailService
       .deleteOrderDetail(salesOrderId, salesOrderDetailId)
       .toPromise()
       .then(() => {
@@ -382,7 +384,7 @@ private formatDateForAPI(date: string | Date): string {
   }
 
   private loadOrderDetails(orderId: number): void {
-    this.service.getOrderDetails(orderId).subscribe({
+    this.ordersDetailService.getOrderDetails(orderId).subscribe({
       next: (data) => {
         this.orderDetailsDataSource = data;
       }

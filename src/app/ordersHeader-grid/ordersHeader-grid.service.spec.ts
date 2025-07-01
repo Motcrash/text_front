@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OrdersHeaderService } from './ordersHeader-grid.service';
+import { OrdersHeaderService } from '../services/ordersHeader.service';
 
 describe('Service', () => {
   let service: OrdersHeaderService;
