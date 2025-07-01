@@ -1,4 +1,4 @@
-import { RoleGridService } from './role-grid.service';
+import { RoleGridService } from '../services/roles.service';
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
