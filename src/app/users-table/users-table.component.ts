@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
 import { UsersTableService } from '../services/users.service';
-import { RoleGridService } from '../services/roles.service';
+import { RolesService } from '../services/roles.service';
 import notify from 'devextreme/ui/notify';
 
 @Component({
   selector: 'app-roles-grid',
   templateUrl: './users-table.component.html',
   styleUrls: ['./users-table.component.css'],
-  providers: [UsersTableService, RoleGridService],
+  providers: [UsersTableService, RolesService],
 })
 export class UsersTableComponent implements OnInit {
   dataSource!: DataSource;
@@ -29,7 +29,7 @@ export class UsersTableComponent implements OnInit {
 
   constructor(
     private service: UsersTableService,
-    private roleService: RoleGridService
+    private roleService: RolesService
   ) {}
 
    onRowInserting(e: any): void {

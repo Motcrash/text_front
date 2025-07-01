@@ -16,7 +16,7 @@ interface Role {
 }
 
 @Injectable()
-export class RoleGridService {
+export class RolesService {
   private apiUrl = 'https://localhost:7229/api/Roles';
   constructor(private http: HttpClient) {}
 

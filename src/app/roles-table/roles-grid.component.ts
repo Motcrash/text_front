@@ -1,4 +1,4 @@
-import { RoleGridService } from '../services/roles.service';
+import { RolesService } from '../services/roles.service';
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
@@ -8,7 +8,7 @@ import notify from 'devextreme/ui/notify';
   selector: 'app-roles-grid',
   templateUrl: './roles-grid.component.html',
   styleUrls: ['./roles-grid.component.css'],
-  providers: [RoleGridService],
+  providers: [RolesService],
 })
 export class RolesGridComponent implements OnInit {
   dataSource!: DataSource;
@@ -17,7 +17,7 @@ export class RolesGridComponent implements OnInit {
   hasError = false;
   errorMessage = '';
 
-  constructor(private service: RoleGridService) {}
+  constructor(private service: RolesService) {}
 
    onRowInserting(e: any): void {
     if (!e.data.roleName || e.data.roleName.trim() === '') {

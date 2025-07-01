@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import type { ContentReadyEvent } from 'devextreme/ui/data_grid';
-import { RoleGridService } from '../services/roles.service';
+import { RolesService } from '../services/roles.service';
 import notify from 'devextreme/ui/notify';
 import { RoleViewsService } from '../services/roleViews.service';
 import { ViewsService } from '../services/views.service';
@@ -10,7 +10,7 @@ import { ViewsService } from '../services/views.service';
   selector: 'app-roles-grid',
   templateUrl: './roleViews-table.component.html',
   styleUrls: ['./roleViews-table.component.css'],
-  providers: [RoleViewsService, RoleGridService, ViewsService],
+  providers: [RoleViewsService, RolesService, ViewsService],
 })
 export class RoleViewsComponent implements OnInit {
   dataSource!: DataSource;
@@ -39,7 +39,7 @@ export class RoleViewsComponent implements OnInit {
 
   constructor(
     private service: RoleViewsService,
-    private roleService: RoleGridService,
+    private roleService: RolesService,
     private viewsService: ViewsService
   ) {}
 
