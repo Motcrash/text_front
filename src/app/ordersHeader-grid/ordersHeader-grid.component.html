@@ -1,13 +1,16 @@
 <h1 class="title">Sells Orders Header</h1>
 
+<!-- Loading and error states -->
 <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
 
-<app-error-message 
-  *ngIf="hasError && !isLoading" 
-  [message]="'There was an error loading the data, please try again later.'" 
-  (retry)="retryLoad()">
+<app-error-message
+  *ngIf="hasError && !isLoading"
+  [message]="'There was an error loading the data, please try again later.'"
+  (retry)="retryLoad()"
+>
 </app-error-message>
 
+<!-- Main grid -->
 <dx-data-grid
   *ngIf="!isLoading && !hasError"
   id="gridContainer"
@@ -26,116 +29,6 @@
   (onRowExpanding)="onRowExpanding($event)"
 >
   <dxo-paging [pageSize]="15"></dxo-paging>
-
-  <dxo-editing
-    mode="popup"
-    [allowUpdating]="true"
-    [allowAdding]="true"
-    [useIcons]="true"
-  >
-    <dxo-popup
-      title="Sell order header Information"
-      [showTitle]="true"
-      [width]="'80%'"
-      [height]="'80%'"
-    >
-    </dxo-popup>
-
-    <dxo-form>
-      <dxi-item
-        itemType="group"
-        caption="Order Information"
-        [colCount]="2"
-        [colSpan]="2"
-      >
-
-        <dxi-item dataField="orderDate" [isRequired]="isEditing" [disabled]="isEditing"></dxi-item>
-        <dxi-item dataField="dueDate" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="shipDate" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="status" [isRequired]="true">
-          <dxo-lookup 
-            [dataSource]="statusDictionary" 
-            valueExpr="id" 
-            displayExpr="name">
-          </dxo-lookup>
-        </dxi-item>
-        <dxi-item dataField="subTotal" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="totalDue" [isRequired]="true"></dxi-item>
-        <dxi-item dataField="comment" [colSpan]="2"></dxi-item>
-      </dxi-item>
-
-      <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-
-      <dxi-item
-        itemType="group"
-        caption="Order Details"
-        [colCount]="1"
-        [colSpan]="2"
-      >
-        <dxi-item [template]="'orderDetailsGrid'" [colSpan]="1"></dxi-item>
-      </dxi-item>
-    </dxo-form>
-  </dxo-editing>
-
-  <dxo-master-detail
-            [enabled]="true"
-            template="detailGridTemplate"
-        ></dxo-master-detail>
-
-        <div *dxTemplate="let salesOrder of 'detailGridTemplate'">
-            <dx-data-grid
-                [dataSource]="orderDetailsDataSource"
-                (onRowInserting)="onRowInserting($event)"
-                [showBorders]="false"
-                [width]="'100%'"
-                [showColumnLines]="false"
-                [hoverStateEnabled]="true"
-                [rowAlternationEnabled]="true"
-                [keyExpr]="'salesOrderDetailId'"
-            >
-                <dxo-paging [pageSize]="5"></dxo-paging>
-                <dxo-pager
-                    [showPageSizeSelector]="true"
-                    [allowedPageSizes]="[5, 10, 20]"
-                    [showInfo]="true">
-                </dxo-pager>
-
-                <dxo-summary>
-                  <dxi-total-item
-                    column="lineTotal"
-                    summaryType="sum"
-                    [displayFormat]="'Total: {0}'"
-                    [valueFormat]="'currency'"
-                    [showInColumn]="'lineTotal'">
-                  </dxi-total-item>
-
-                  <dxi-total-item 
-                    column="orderQty" 
-                    summaryType="sum" 
-                    [displayFormat]="'Products: {0}'"
-                    [showInColumn]="'lineTotal'">
-                  </dxi-total-item>
-                </dxo-summary>
-
-                <dxi-column dataField="specialOfferProduct.product.name" caption="Product" [width]="200"></dxi-column>
-                <dxi-column 
-    dataField="status" 
-    dataType="number"
-    caption="Status"
-  >
-    <dxo-lookup 
-      [dataSource]="statusDictionary" 
-      valueExpr="id" 
-      displayExpr="name">
-    </dxo-lookup>
-  </dxi-column>
-      <dxi-column dataField="orderQty" caption="Quantity" dataType="number" [width]="100"></dxi-column>
-      <dxi-column dataField="unitPrice" caption="Unit Price" dataType="number" format="currency" [width]="120"></dxi-column>
-      <dxi-column dataField="unitPriceDiscount" dataType="number" caption="Discount" format="percent" [width]="100"></dxi-column>
-      <dxi-column dataField="lineTotal" caption="Line Total" dataType="number" format="currency" [width]="120"></dxi-column>
-            </dx-data-grid>
-        </div>
-
   <dxo-pager
     [visible]="true"
     [showPageSizeSelector]="true"
@@ -148,8 +41,8 @@
   ></dxo-search-panel>
 
   <dxo-group-panel [visible]="false"></dxo-group-panel>
-  <dxo-grouping [autoExpandAll]="true"></dxo-grouping>
 
+  <!-- Main columns -->
   <dxi-column
     dataField="salesOrderId"
     dataType="text"
@@ -189,18 +82,15 @@
     caption="Customer"
   ></dxi-column>
 
-  <dxi-column
-    dataField="status"
-    dataType="number"
-    caption="Status"
-  >
+  <dxi-column dataField="status" dataType="number" caption="Status">
+    <dxo-lookup
+      [dataSource]="statusDictionary"
+      valueExpr="id"
+      displayExpr="name"
+    >
+    </dxo-lookup
+  ></dxi-column>
 
-<dxo-lookup 
-      [dataSource]="statusDictionary" 
-      valueExpr="id" 
-      displayExpr="name">
-    </dxo-lookup></dxi-column>
-  
   <dxi-column
     dataField="comment"
     dataType="text"
@@ -221,6 +111,149 @@
     format="currency"
   ></dxi-column>
 
+  <!-- Master detail config -->
+  <dxo-master-detail
+    [enabled]="true"
+    template="detailGridTemplate"
+  ></dxo-master-detail>
+
+  <dxo-editing
+    mode="popup"
+    [allowUpdating]="true"
+    [allowAdding]="true"
+    [useIcons]="true"
+  >
+    <dxo-popup
+      title="Sell order header Information"
+      [showTitle]="true"
+      [width]="'80%'"
+      [height]="'80%'"
+    >
+    </dxo-popup>
+
+    <dxo-form>
+      <dxi-item
+        itemType="group"
+        caption="Order Information"
+        [colCount]="2"
+        [colSpan]="2"
+      >
+        <dxi-item
+          dataField="orderDate"
+          [isRequired]="isEditing"
+          [disabled]="isEditing"
+        ></dxi-item>
+        <dxi-item dataField="dueDate" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="shipDate" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="status" [isRequired]="true">
+          <dxo-lookup
+            [dataSource]="statusDictionary"
+            valueExpr="id"
+            displayExpr="name"
+          >
+          </dxo-lookup>
+        </dxi-item>
+        <dxi-item dataField="subTotal" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="totalDue" [isRequired]="true"></dxi-item>
+        <dxi-item dataField="comment" [colSpan]="2"></dxi-item>
+      </dxi-item>
+
+      <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+
+      <dxi-item
+        itemType="group"
+        caption="Order Details"
+        [colCount]="1"
+        [colSpan]="2"
+      >
+        <dxi-item [template]="'orderDetailsGrid'" [colSpan]="1"></dxi-item>
+      </dxi-item>
+    </dxo-form>
+  </dxo-editing>
+
+  <!-- Detail grid template -->
+  <div *dxTemplate="let salesOrder of 'detailGridTemplate'">
+    <dx-data-grid
+      [dataSource]="orderDetailsDataSource"
+      (onRowInserting)="onRowInserting($event)"
+      [showBorders]="false"
+      [width]="'100%'"
+      [showColumnLines]="false"
+      [hoverStateEnabled]="true"
+      [rowAlternationEnabled]="true"
+      [keyExpr]="'salesOrderDetailId'"
+    >
+      <dxo-paging [pageSize]="5"></dxo-paging>
+      <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[5, 10, 20]"
+        [showInfo]="true"
+      >
+      </dxo-pager>
+
+      <dxo-summary>
+        <dxi-total-item
+          column="lineTotal"
+          summaryType="sum"
+          [displayFormat]="'Total: {0}'"
+          [valueFormat]="'currency'"
+          [showInColumn]="'lineTotal'"
+        >
+        </dxi-total-item>
+
+        <dxi-total-item
+          column="orderQty"
+          summaryType="sum"
+          [displayFormat]="'Products: {0}'"
+          [showInColumn]="'lineTotal'"
+        >
+        </dxi-total-item>
+      </dxo-summary>
+
+      <dxi-column
+        dataField="specialOfferProduct.product.name"
+        caption="Product"
+        [width]="200"
+      ></dxi-column>
+      <dxi-column dataField="status" dataType="number" caption="Status">
+        <dxo-lookup
+          [dataSource]="statusDictionary"
+          valueExpr="id"
+          displayExpr="name"
+        >
+        </dxo-lookup>
+      </dxi-column>
+      <dxi-column
+        dataField="orderQty"
+        caption="Quantity"
+        dataType="number"
+        [width]="100"
+      ></dxi-column>
+      <dxi-column
+        dataField="unitPrice"
+        caption="Unit Price"
+        dataType="number"
+        format="currency"
+        [width]="120"
+      ></dxi-column>
+      <dxi-column
+        dataField="unitPriceDiscount"
+        dataType="number"
+        caption="Discount"
+        format="percent"
+        [width]="100"
+      ></dxi-column>
+      <dxi-column
+        dataField="lineTotal"
+        caption="Line Total"
+        dataType="number"
+        format="currency"
+        [width]="120"
+      ></dxi-column>
+    </dx-data-grid>
+  </div>
+
+  <!-- Detail grid template -->
   <div *dxTemplate="let data of 'orderDetailsGrid'">
     <dx-data-grid
       [dataSource]="orderDetailsDataSource"
@@ -235,8 +268,7 @@
       (onInitNewRow)="onInitNewRow($event)"
       (onEditingStart)="onEditingStart($event)"
       (onEditorPreparing)="onEditorPreparing($event)"
-      >
-
+    >
       <dxo-editing
         mode="row"
         [allowUpdating]="true"
@@ -249,56 +281,57 @@
       <dxo-paging [pageSize]="10"></dxo-paging>
 
       <dxo-summary>
-      <dxi-total-item
-        column="lineTotal"
-        summaryType="sum"
-        [displayFormat]="'Total: {0}'"
-        [valueFormat]="'currency'"
-        [showInColumn]="'lineTotal'">
-      </dxi-total-item>
+        <dxi-total-item
+          column="lineTotal"
+          summaryType="sum"
+          [displayFormat]="'Total: {0}'"
+          [valueFormat]="'currency'"
+          [showInColumn]="'lineTotal'"
+        >
+        </dxi-total-item>
 
-      <dxi-total-item 
-        column="orderQty" 
-        summaryType="sum" 
-        [displayFormat]="'Products: {0}'"
-        [showInColumn]="'lineTotal'">
-      </dxi-total-item>
-    </dxo-summary>
+        <dxi-total-item
+          column="orderQty"
+          summaryType="sum"
+          [displayFormat]="'Products: {0}'"
+          [showInColumn]="'lineTotal'"
+        >
+        </dxi-total-item>
+      </dxo-summary>
 
       <dxi-column dataField="productId" caption="Product" [width]="200">
         <dxo-lookup
-            [dataSource]="productsDataSource"
-            valueExpr="productId"
-            displayExpr="name">
+          [dataSource]="productsDataSource"
+          valueExpr="productId"
+          displayExpr="name"
+        >
         </dxo-lookup>
       </dxi-column>
-      <dxi-column dataField="orderQty" caption="Quantity" [width]="100"></dxi-column>
-      <dxi-column dataField="unitPrice" caption="Unit Price" [allowEditing]="false" format="currency" [width]="120"></dxi-column>
-      <dxi-column dataField="unitPriceDiscount" caption="Discount" format="percent" [width]="100"></dxi-column>
-      <dxi-column dataField="lineTotal" caption="Line Total" format="currency" [allowEditing]="false" [width]="120"></dxi-column>
-
+      <dxi-column
+        dataField="orderQty"
+        caption="Quantity"
+        [width]="100"
+      ></dxi-column>
+      <dxi-column
+        dataField="unitPrice"
+        caption="Unit Price"
+        [allowEditing]="false"
+        format="currency"
+        [width]="120"
+      ></dxi-column>
+      <dxi-column
+        dataField="unitPriceDiscount"
+        caption="Discount"
+        format="percent"
+        [width]="100"
+      ></dxi-column>
+      <dxi-column
+        dataField="lineTotal"
+        caption="Line Total"
+        format="currency"
+        [allowEditing]="false"
+        [width]="120"
+      ></dxi-column>
     </dx-data-grid>
-  </div>
-
-  <div *dxTemplate="let d of 'discountCellTemplate'">
-    <div class="chart-cell">
-      <dx-bullet
-        [showTarget]="false"
-        [showZeroLevel]="true"
-        [startScaleValue]="0"
-        [endScaleValue]="100"
-        [value]="d.value * 100"
-      >
-        <dxo-size [width]="150" [height]="35"></dxo-size>
-        <dxo-tooltip
-          [enabled]="true"
-          [paddingTopBottom]="2"
-          [customizeTooltip]="customizeTooltip"
-        >
-          <dxo-font [size]="18"></dxo-font>
-        </dxo-tooltip>
-        <dxo-margin [top]="5" [bottom]="0" [left]="5"></dxo-margin>
-      </dx-bullet>
-    </div>
   </div>
 </dx-data-grid>
