@@ -15,6 +15,8 @@ import { DxBulletModule,
   DxDataGridModule,
   DxSelectBoxModule,
   DxTemplateModule } from 'devextreme-angular';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { DxBulletModule,
     SidebarComponent,
     RolesGridComponent,
     UsersTableComponent,
-    RoleViewsComponent
+    RoleViewsComponent,
+    LoadingSpinnerComponent,
+    ErrorMessageComponent
   ],
   imports: [
     BrowserModule,
