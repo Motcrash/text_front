@@ -74,7 +74,6 @@ export class OrdersHeaderComponent implements OnInit {
     this.isAdding = true;
     this.isEditing = false;
     this.selectedOrderId = null;
-
     e.data.orderQty = 1;
     e.data.unitPriceDiscount = 0;
 
